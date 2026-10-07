@@ -1,10 +1,16 @@
+# GTSfM fork
+
+This repository is my fork of [GTSfM](https://github.com/borglab/gtsfm), the Georgia Tech Structure-from-Motion project. The upstream documentation, research credits, and license terms follow below. My reconstruction visualization work is documented separately in [visualization-gtsfm-paper](https://github.com/nilakarthikesan/visualization-gtsfm-paper).
+
+---
+
 ![Alt text](gtsfm-logo.png?raw=true)
 
 | Platform     | Build Status  |
 |:------------:| :-------------:|
 | Ubuntu 20.04.3 |  ![Linux CI](https://github.com/borglab/gtsfm/actions/workflows/test-python.yml/badge.svg?branch=master) |
 
-Georgia Tech Structure-from-Motion (GTSfM) is an end-to-end SfM pipeline based on [GTSAM](https://github.com/borglab/gtsam). GTSfM was designed from the ground-up to natively support parallel computation using [Dask](https://dask.org/). 
+Georgia Tech Structure-from-Motion (GTSfM) is an end-to-end SfM pipeline based on [GTSAM](https://github.com/borglab/gtsam). GTSfM was designed from the ground-up to natively support parallel computation using [Dask](https://dask.org/).
 
 For more details, please refer to our [arXiv preprint](https://arxiv.org/abs/2311.18801).
 
@@ -45,24 +51,24 @@ For detailed UV installation instructions, see **[uv-setup.md](docs/setup/uv-set
 
 Both methods will allow you to run GTSfM successfully.
 
-## Try It on Google Colab  
+## Try It on Google Colab
 
 For a quick hands-on example, check out this Colab notebook [![Colab notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/borglab/gtsfm/blob/master/notebooks/gtsfm_colab.ipynb)
 
 
 ## Usage Guide (Running 3D Reconstruction)
 
-Before running reconstruction, if you intend to use modules with pre-trained weights (e.g., **SuperPoint, SuperGlue, or PatchmatchNet**), first download the model weights by running:  
+Before running reconstruction, if you intend to use modules with pre-trained weights (e.g., **SuperPoint, SuperGlue, or PatchmatchNet**), first download the model weights by running:
 
 ```bash
 bash scripts/download_model_weights.sh
-```  
+```
 
-### Running SfM  
+### Running SfM
 
 GTSfM provides a unified runner that supports all dataset types through Hydra configuration.
 
-To process a dataset containing only an **image directory and EXIF metadata**, ensure your dataset follows this structure:  
+To process a dataset containing only an **image directory and EXIF metadata**, ensure your dataset follows this structure:
 
 ```
 └── {DATASET_NAME}
@@ -70,9 +76,9 @@ To process a dataset containing only an **image directory and EXIF metadata**, e
                ├── image1.jpg
                ├── image2.jpg
                ├── image3.jpg
-```  
+```
 
-Then, run the following command:  
+Then, run the following command:
 
 ```bash
 ./run --config_name {CONFIG_NAME} --loader olsson --dataset_dir {DATASET_DIR} --num_workers {NUM_WORKERS}
@@ -91,11 +97,11 @@ The runner exposes five portable CLI arguments for dataset selection and univers
 **All other loader‑specific settings** (anything beyond the five above) must be specified using **Hydra overrides** on the nested config node `loader.*`. This is standard Hydra behavior: use dot‑notation keys with `=` assignments.
 
 To discover all available overrides for a given loader, open its YAML in `gtsfm/configs/loader/`
-#### Required Image Metadata  
+#### Required Image Metadata
 
-Currently, we require **EXIF data** embedded into your images. Alternatively, you can provide:  
-- Ground truth intrinsics in the expected format for an **Olsson dataset**  
-- **COLMAP-exported** text data  
+Currently, we require **EXIF data** embedded into your images. Alternatively, you can provide:
+- Ground truth intrinsics in the expected format for an **Olsson dataset**
+- **COLMAP-exported** text data
 
 
 ### Additional CLI Arguments
@@ -103,7 +109,7 @@ Currently, we require **EXIF data** embedded into your images. Alternatively, yo
 - `--run_mvs` — enables dense Multi-View Stereo (MVS) reconstruction after the sparse SfM pipeline.
 - `--run_gs` — enables Gaussian Splatting for dense scene representation.
 
-Many other dask-related arguments are available. Run 
+Many other dask-related arguments are available. Run
 ```bash
 ./run --help
 ```
@@ -130,40 +136,40 @@ For a dataset with metadata formatted in the COLMAP style:
       loader.use_gt_extrinsics=true
 ```
 
-You can monitor the distributed computation using the [Dask dashboard](http://localhost:8787/status).  
+You can monitor the distributed computation using the [Dask dashboard](http://localhost:8787/status).
 **Note:** The dashboard will only display activity while tasks are actively running, but comprehensive performance reports can be found in the `dask_reports` folder.
 
-### Comparing GTSFM Output with COLMAP Output  
+### Comparing GTSFM Output with COLMAP Output
 
-To compare GTSFM output with COLMAP, use the following command:  
+To compare GTSFM output with COLMAP, use the following command:
 
 ```bash
 ./run --config_name {CONFIG_NAME} --loader colmap --dataset_dir {DATASET_DIR} --num_workers {NUM_WORKERS} --max_frame_lookahead {MAX_FRAME_LOOKAHEAD}
-```  
+```
 
-### Visualizing Results with Open3D  
+### Visualizing Results with Open3D
 
-To visualize the reconstructed scene using **Open3D**, run:  
+To visualize the reconstructed scene using **Open3D**, run:
 
 ```bash
 python gtsfm/visualization/view_scene.py
-```  
+```
 
-### Speeding Up Front-End Processing  
+### Speeding Up Front-End Processing
 
-For users who work with the **same dataset repeatedly**, GTSFM allows **caching front-end results** for faster inference.  
-Refer to the detailed guide:  
-📄 [GTSFM Front-End Cacher README](https://github.com/borglab/gtsfm/tree/master/gtsfm/frontend/cacher)  
+For users who work with the **same dataset repeatedly**, GTSFM allows **caching front-end results** for faster inference.
+Refer to the detailed guide:
+ [GTSFM Front-End Cacher README](https://github.com/borglab/gtsfm/tree/master/gtsfm/frontend/cacher)
 
-### Running GTSFM on a Multi-Machine Cluster  
+### Running GTSFM on a Multi-Machine Cluster
 
-For users who want to run GTSFM on a **cluster of multiple machines**, follow the setup instructions here:  
-📄 [CLUSTER.md](https://github.com/borglab/gtsfm/tree/master/docs/deployment/CLUSTER.md)  
+For users who want to run GTSFM on a **cluster of multiple machines**, follow the setup instructions here:
+ [CLUSTER.md](https://github.com/borglab/gtsfm/tree/master/docs/deployment/CLUSTER.md)
 
-### Where Are the Results Stored?  
+### Where Are the Results Stored?
 
-- The output will be saved in `--output_root`, which defaults to the `results` folder in the repo root.  
-- **Poses and 3D tracks** are stored in **COLMAP format** inside the `ba_output` subdirectory of `--output_root`.  
+- The output will be saved in `--output_root`, which defaults to the `results` folder in the repo root.
+- **Poses and 3D tracks** are stored in **COLMAP format** inside the `ba_output` subdirectory of `--output_root`.
 - You can **visualize** these using the **COLMAP GUI**.
 
 ### Nerfstudio
@@ -201,7 +207,7 @@ The runner supports all loaders through `--loader`, `--dataset_dir`, and `--imag
 
 The following loader types are supported:
 - `colmap` - COLMAP format datasets
-- `hilti` - Hilti SLAM challenge datasets  
+- `hilti` - Hilti SLAM challenge datasets
 - `astrovision` - AstroVision space datasets
 - `olsson` - Olsson format datasets
 - `argoverse` - Argoverse autonomous driving datasets
@@ -264,11 +270,11 @@ Contributions are always welcome! Please be aware of our [contribution guideline
 
 ## Citing this work
 
-If you use GTSfM, please cite our paper: 
+If you use GTSfM, please cite our paper:
 
 ```
 @misc{Baid23_distributedDeepSfm,
-      title={Distributed Global Structure-from-Motion with a Deep Front-End}, 
+      title={Distributed Global Structure-from-Motion with a Deep Front-End},
       author={Ayush Baid and John Lambert and Travis Driver and Akshay Krishnan and Hayk Stepanyan and Frank Dellaert},
       year={2023},
       eprint={2311.18801},
